@@ -1,4 +1,4 @@
-import Tkinter as tk
+import tkinter as tk
 
 class Game(tk.Frame):
     """Game instance, a Tkinter.Frame subclass given to Tkinter.Tk() root."""
@@ -49,7 +49,7 @@ class Game(tk.Frame):
         # We do it this way because the bind() call requires a callback
         # argument, so we can't just put in self.paddle.move(10) because
         # it is not callable (it would evaluate .move(10) in place first
-        # before calling the .bind() command! 
+        # before calling the .bind() command!
         self.canvas.bind('<Left>', lambda _: self.paddle.move(-10))
         self.canvas.bind('<Right>', lambda _: self.paddle.move(10))
 
@@ -81,7 +81,7 @@ class Game(tk.Frame):
         """
         brick = Brick(self.canvas, x, y, hits)
         # brick.item will be int that uniquely ID's that brick on canvas
-        self.items[brick.item] = brick 
+        self.items[brick.item] = brick
 
     def draw_text(self, x, y, text, size='40'):
         """
@@ -138,16 +138,16 @@ class Game(tk.Frame):
         """
         Process the ball's collisions.
 
-        Since Ball.collide receives a list of game objects and 
-        canvas.find_overlapping() returns a list of colliding items 
+        Since Ball.collide receives a list of game objects and
+        canvas.find_overlapping() returns a list of colliding items
         with a given position, we use the dict of items to transform
         each canvas item into its corresponding game object.
 
-        Game.items property will only contain canvas items that can 
-        collide with the ball. Therefore, we only need to pass the 
+        Game.items property will only contain canvas items that can
+        collide with the ball. Therefore, we only need to pass the
         items from the Game.items dict.
 
-        We filter the canvas items that cannot collide with the ball, 
+        We filter the canvas items that cannot collide with the ball,
         like text objects, and then we retrieve each game objects by
         its key.
         """
@@ -157,8 +157,8 @@ class Game(tk.Frame):
         # can collide with the ball
         collideables = [self.items[x] for x in items if x in self.items]
         self.ball.collide(collideables)
-        
-    
+
+
 class GameObject(object):
     """Base class for game entities on a Tkinter.Canvas()."""
     def __init__(self, canvas, item):
@@ -192,7 +192,7 @@ class GameObject(object):
     def delete(self):
         """Remove instance's self.item."""
         self.canvas.delete(self.item)
-        
+
 
 class Ball(GameObject):
     """
@@ -204,7 +204,7 @@ class Ball(GameObject):
         self.radius = 10
         self.direction = [1, -1]  # right and up
         self.speed = 10
-        
+
         # self.item value will be an integer, which is ref num returned by method
         item = canvas.create_oval(x - self.radius, y - self.radius,
                                   x + self.radius, y + self.radius,
@@ -220,7 +220,7 @@ class Ball(GameObject):
         # ---------------------------------------------------------
         ball_coords = self.get_position()
         width = self.canvas.winfo_width()  # TODO: move to call once
-        
+
         if ball_coords[0] <= 0 or ball_coords[2] >= width:
             self.direction[0] *= -1  # reverse x vector
         if ball_coords[1] <=0:
@@ -247,7 +247,7 @@ class Ball(GameObject):
         # ball center is to right of right side of brick during collision
         if ball_center_x > brick_coords[2]:
             self.direction[0] = 1  # ball x to right
-        # check is ball center is left of the left side of brick 
+        # check is ball center is left of the left side of brick
         # during collision
         elif ball_center_x < brick_coords[0]:
             self.direction[0] = -1  # ball x to the left
@@ -259,13 +259,13 @@ class Ball(GameObject):
         Above is valid for when ball hits the paddle or a single brick. But
         if we hit two bricks at the same time things get hairy. We simplify
         by assuming multiple brick collisions can only happen from above or
-        below. That means that we change the y-axis direction of the ball 
-        without calculating the position of the colliding bricks. 
+        below. That means that we change the y-axis direction of the ball
+        without calculating the position of the colliding bricks.
 
-        So what we do is guard all of the above by checking how many 
+        So what we do is guard all of the above by checking how many
         colliding objects we have, in the argument game_objects, and if it
         is two or more we can just flip the y-axis on the ball and be done.
-        If not, we have to do more investigation and do all of the above.      
+        If not, we have to do more investigation and do all of the above.
         """
         ball_coords = self.get_position()
         ball_center_x = (ball_coords[0] + ball_coords[2]) * 0.5  # same as / 2
@@ -286,10 +286,10 @@ class Ball(GameObject):
             if isinstance(game_object, Brick):
                 game_object.hit()  # decrement hit counter, etc. in Brick class
 
-    
+
 class Paddle(GameObject):
     """
-    The player's paddle. A set_ball method stores a reference to the ball, 
+    The player's paddle. A set_ball method stores a reference to the ball,
     which can be moved with the ball before the game starts.
     """
     def __init__(self, canvas, x, y):
@@ -320,8 +320,8 @@ class Paddle(GameObject):
     def move(self, offset):
         """
         Move the Paddle on the Tkinter.Canvas within bounds.
-        
-        Contained here is the pre-move logic. The actual move is 
+
+        Contained here is the pre-move logic. The actual move is
         done by calling our parent GameObject.move() method.
 
         :param offset: integer. amount to move in pixels left or right.
@@ -334,7 +334,7 @@ class Paddle(GameObject):
             # Below happens when the game has not been started; move the ball
             if self.ball is not None:
                 self.ball.move(offset, 0)  # Call Ball inherited move() method
-            
+
 
 class Brick(GameObject):
     """Ball objects destroy these canvas rectangle built objects when hit."""
@@ -343,7 +343,7 @@ class Brick(GameObject):
     def __init__(self, canvas, x, y, hits):
         """
         Initialize a Brick object.
-        
+
         :param canvas: a Tkinter.Canvas() instance
         :param x: Where to place it on horizontal x axis
         :param y: Where to place it on the vertical x axis
@@ -370,11 +370,11 @@ class Brick(GameObject):
             self.delete()  # inherited from GameObject()
         else:  # repaint next color to indicate Brick was hit
             self.canvas.itemconfig(self.item, fill=Brick.COLORS[self.hits])
-            
-        
-        
+
+
+
 if __name__ == "__main__":
-    # Create the root app and then create the Game instance (a tk.Frame()) 
+    # Create the root app and then create the Game instance (a tk.Frame())
     root = tk.Tk()
     root.title('Tkinter Breakout')
     # Frame() needs a Tk() instance as its parent, we pass our root app
