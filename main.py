@@ -1,3 +1,4 @@
+"""main.py tkinter python clone of breakout!."""
 import tkinter as tk
 
 class Game(tk.Frame):
@@ -159,7 +160,7 @@ class Game(tk.Frame):
         self.ball.collide(collideables)
 
 
-class GameObject(object):
+class GameObject():
     """Base class for game entities on a Tkinter.Canvas()."""
     def __init__(self, canvas, item):
         """
@@ -219,11 +220,11 @@ class Ball(GameObject):
         # BOUNDS COLLISIONS
         # ---------------------------------------------------------
         ball_coords = self.get_position()
-        width = self.canvas.winfo_width()  # TODO: move to call once
+        width = self.canvas.winfo_width()
 
         if ball_coords[0] <= 0 or ball_coords[2] >= width:
             self.direction[0] *= -1  # reverse x vector
-        if ball_coords[1] <=0:
+        if ball_coords[1] <= 0:
             self.direction[1] *= -1  # reverse y vector
         x = self.direction[0] * self.speed  # scale by Ball's speed
         y = self.direction[1] * self.speed
@@ -375,8 +376,8 @@ class Brick(GameObject):
 
 if __name__ == "__main__":
     # Create the root app and then create the Game instance (a tk.Frame())
-    root = tk.Tk()
-    root.title('Tkinter Breakout')
+    ROOT = tk.Tk()
+    ROOT.title('Tkinter Breakout')
     # Frame() needs a Tk() instance as its parent, we pass our root app
-    game = Game(root)
-    game.mainloop()
+    GAME = Game(ROOT)
+    GAME.mainloop()
